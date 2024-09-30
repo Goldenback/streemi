@@ -1,4 +1,9 @@
 
+###> Mac and IDE ###
+.idea
+.DS_Store
+###< Mac and IDE ###
+
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
