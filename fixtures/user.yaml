@@ -1,0 +1,6 @@
+App\Entity\User:
+  user_{1..10}:
+    username: <userName()>
+    email: <email()>
+    password: <password()>
+    status: <randomElement(['active', 'inactive'])>
