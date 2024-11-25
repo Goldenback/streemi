@@ -31,19 +31,19 @@ class Comment
 	#[ORM\JoinColumn(nullable: false)]
 	private ?Media $media = null;
 
-    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'comments')]
-    private ?self $parentComment = null;
+	#[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'comments')]
+	private ?self $parentComment = null;
 
-    /**
-     * @var Collection<int, self>
-     */
-    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parentComment')]
-    private Collection $comments;
+	/**
+	 * @var Collection<int, self>
+	 */
+	#[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parentComment')]
+	private Collection $comments;
 
-    public function __construct()
-    {
-        $this->comments = new ArrayCollection();
-    }
+	public function __construct()
+	{
+		$this->comments = new ArrayCollection();
+	}
 
 	public function getId(): ?int
 	{
@@ -98,45 +98,50 @@ class Comment
 		return $this;
 	}
 
-    public function getParentComment(): ?self
-    {
-        return $this->parentComment;
-    }
+	public function getParentComment(): ?self
+	{
+		return $this->parentComment;
+	}
 
-    public function setParentComment(?self $parentComment): static
-    {
-        $this->parentComment = $parentComment;
+	public function setParentComment(?self $parentComment): static
+	{
+		$this->parentComment = $parentComment;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * @return Collection<int, self>
-     */
-    public function getComments(): Collection
-    {
-        return $this->comments;
-    }
+	/**
+	 * @return Collection<int, self>
+	 */
+	public function getComments(): Collection
+	{
+		return $this->comments;
+	}
 
-    public function addComment(self $comment): static
-    {
-        if (!$this->comments->contains($comment)) {
-            $this->comments->add($comment);
-            $comment->setParentComment($this);
-        }
+	public function getValidComments(): Collection
+	{
+		return $this->comments->filter(fn(self $comment) => $comment->getStatus() === CommentStatusEnum::VALID);
+	}
 
-        return $this;
-    }
+	public function addComment(self $comment): static
+	{
+		if (!$this->comments->contains($comment)) {
+			$this->comments->add($comment);
+			$comment->setParentComment($this);
+		}
 
-    public function removeComment(self $comment): static
-    {
-        if ($this->comments->removeElement($comment)) {
-            // set the owning side to null (unless already changed)
-            if ($comment->getParentComment() === $this) {
-                $comment->setParentComment(null);
-            }
-        }
+		return $this;
+	}
 
-        return $this;
-    }
+	public function removeComment(self $comment): static
+	{
+		if ($this->comments->removeElement($comment)) {
+			// set the owning side to null (unless already changed)
+			if ($comment->getParentComment() === $this) {
+				$comment->setParentComment(null);
+			}
+		}
+
+		return $this;
+	}
 }

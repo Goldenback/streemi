@@ -210,6 +210,18 @@ class AppFixtures extends Fixture
 				$comment->setStatus(random_int(0, 1) === 1 ? CommentStatusEnum::VALID : CommentStatusEnum::WAITING);
 				$comment->setMedia($media);
 
+
+				$shouldHaveParent = random_int(0, 5) < 2;
+				if ($shouldHaveParent) {
+					$parentComment = new Comment();
+					$parentComment->setAuthor($users[array_rand($users)]);
+					$parentComment->setContent("Commentaire parent");
+					$parentComment->setStatus(random_int(0, 1) === 1 ? CommentStatusEnum::VALID : CommentStatusEnum::WAITING);
+					$parentComment->setMedia($media);
+					$comment->setParentComment($parentComment);
+					$manager->persist($parentComment);
+				}
+				
 				$manager->persist($comment);
 			}
 		}

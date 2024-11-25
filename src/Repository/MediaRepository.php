@@ -11,25 +11,22 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class MediaRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Media::class);
-    }
+	public function __construct(ManagerRegistry $registry)
+	{
+		parent::__construct($registry, Media::class);
+	}
 
-//    /**
-//     * @return Media[] Returns an array of Media objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('m.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+	/**
+	 * @return Media[] Returns an array of Media objects
+	 */
+	public function findTrendingMedias(int $maximumElements = 9): array
+	{
+		return $this->createQueryBuilder('m')
+			->orderBy('m.releaseDate', 'DESC')
+			->setMaxResults($maximumElements)
+			->getQuery()
+			->getResult();
+	}
 
 //    public function findOneBySomeField($value): ?Media
 //    {
