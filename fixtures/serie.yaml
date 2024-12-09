@@ -1,0 +1,2 @@
+App\Entity\Serie:
+  serie_{1..3}:

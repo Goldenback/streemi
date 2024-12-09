@@ -1,0 +1,5 @@
+App\Entity\PlaylistMedia:
+  playlist_media_{1..10}:
+    playlist_id: <numberBetween(1, 5)>
+    media_id: <numberBetween(1, 10)>
+    added_at: <dateTime()>

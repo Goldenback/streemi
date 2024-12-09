@@ -1,0 +1,7 @@
+App\Entity\Comment:
+  comment_{1..10}:
+    author_id: <numberBetween(1, 5)>
+    content: <paragraph()>
+    status: <randomElement(['approved', 'pending', 'rejected'])>
+    media_id: <numberBetween(1, 10)>
+    parent_comment_id: <optional(numberBetween(1, 5))>

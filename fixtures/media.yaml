@@ -1,0 +1,10 @@
+App\Entity\Media:
+  media_{1..10}:
+    title: <sentence()>
+    short_description: <paragraph()>
+    long_description: <paragraph()>
+    release_date: <date('Y-m-d')>
+    cover_image: <imageUrl()>
+    staff_members: <json()>
+    cast_members: <json()>
+    type: <randomElement(['movie', 'series', 'documentary'])>

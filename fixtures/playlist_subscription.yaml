@@ -1,0 +1,4 @@
+App\Entity\PlaylistSubscription:
+  playlist_subscription_{1..10}:
+    playlist_id: <numberBetween(1, 5)>
+    subscriber_id: <numberBetween(1, 5)>

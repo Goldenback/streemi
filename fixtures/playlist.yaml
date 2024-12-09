@@ -1,0 +1,6 @@
+App\Entity\Playlist:
+  playlist_{1..5}:
+    creator_id: <numberBetween(1, 5)>
+    name: <word()>
+    created_at: <dateTime()>
+    updated_at: <optional(dateTime())>
