@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Enum\UserStatusEnum;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-class User
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
 	#[ORM\Id]
 	#[ORM\GeneratedValue]
@@ -47,21 +49,24 @@ class User
 	#[ORM\OneToMany(targetEntity: PlaylistSubscription::class, mappedBy: 'subscriber', orphanRemoval: true)]
 	private Collection $playlistSubscriptions;
 
-    #[ORM\ManyToOne(inversedBy: 'users')]
-    private ?Subscription $currentSubscription = null;
+	#[ORM\ManyToOne(inversedBy: 'users')]
+	private ?Subscription $currentSubscription = null;
 
-    /**
-     * @var Collection<int, SubscriptionHistory>
-     */
-    #[ORM\OneToMany(targetEntity: SubscriptionHistory::class, mappedBy: 'subscriber', orphanRemoval: true)]
-    private Collection $subscriptionHistories;
+	/**
+	 * @var Collection<int, SubscriptionHistory>
+	 */
+	#[ORM\OneToMany(targetEntity: SubscriptionHistory::class, mappedBy: 'subscriber', orphanRemoval: true)]
+	private Collection $subscriptionHistories;
+
+	#[ORM\Column]
+	private array $roles = [];
 
 	public function __construct()
 	{
 		$this->comments = new ArrayCollection();
 		$this->playlists = new ArrayCollection();
 		$this->playlistSubscriptions = new ArrayCollection();
-        $this->subscriptionHistories = new ArrayCollection();
+		$this->subscriptionHistories = new ArrayCollection();
 	}
 
 	public function getId(): ?int
@@ -207,45 +212,68 @@ class User
 		return $this;
 	}
 
-    public function getCurrentSubscription(): ?Subscription
-    {
-        return $this->currentSubscription;
-    }
+	public function getCurrentSubscription(): ?Subscription
+	{
+		return $this->currentSubscription;
+	}
 
-    public function setCurrentSubscription(?Subscription $currentSubscription): static
-    {
-        $this->currentSubscription = $currentSubscription;
+	public function setCurrentSubscription(?Subscription $currentSubscription): static
+	{
+		$this->currentSubscription = $currentSubscription;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * @return Collection<int, SubscriptionHistory>
-     */
-    public function getSubscriptionHistories(): Collection
-    {
-        return $this->subscriptionHistories;
-    }
+	/**
+	 * @return Collection<int, SubscriptionHistory>
+	 */
+	public function getSubscriptionHistories(): Collection
+	{
+		return $this->subscriptionHistories;
+	}
 
-    public function addSubscriptionHistory(SubscriptionHistory $subscriptionHistory): static
-    {
-        if (!$this->subscriptionHistories->contains($subscriptionHistory)) {
-            $this->subscriptionHistories->add($subscriptionHistory);
-            $subscriptionHistory->setSubscriber($this);
-        }
+	public function addSubscriptionHistory(SubscriptionHistory $subscriptionHistory): static
+	{
+		if (!$this->subscriptionHistories->contains($subscriptionHistory)) {
+			$this->subscriptionHistories->add($subscriptionHistory);
+			$subscriptionHistory->setSubscriber($this);
+		}
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function removeSubscriptionHistory(SubscriptionHistory $subscriptionHistory): static
-    {
-        if ($this->subscriptionHistories->removeElement($subscriptionHistory)) {
-            // set the owning side to null (unless already changed)
-            if ($subscriptionHistory->getSubscriber() === $this) {
-                $subscriptionHistory->setSubscriber(null);
-            }
-        }
+	public function removeSubscriptionHistory(SubscriptionHistory $subscriptionHistory): static
+	{
+		if ($this->subscriptionHistories->removeElement($subscriptionHistory)) {
+			// set the owning side to null (unless already changed)
+			if ($subscriptionHistory->getSubscriber() === $this) {
+				$subscriptionHistory->setSubscriber(null);
+			}
+		}
 
-        return $this;
-    }
+		return $this;
+	}
+
+	public function getRoles(): array
+	{
+		// TODO: Implement getRoles() method.
+		return $this->roles;
+	}
+
+	public function eraseCredentials(): void
+	{
+		// TODO: Implement eraseCredentials() method.
+	}
+
+	public function getUserIdentifier(): string
+	{
+		return $this->email;
+	}
+
+	public function setRoles(array $roles): static
+	{
+		$this->roles = $roles;
+
+		return $this;
+	}
 }

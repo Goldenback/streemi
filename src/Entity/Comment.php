@@ -37,7 +37,8 @@ class Comment
 	/**
 	 * @var Collection<int, self>
 	 */
-	#[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parentComment')]
+	#[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parentComment', cascade: ['remove'])]
+	#[ORM\JoinColumn(onDelete: 'CASCADE')]
 	private Collection $comments;
 
 	public function __construct()

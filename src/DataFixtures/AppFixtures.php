@@ -19,9 +19,12 @@ use App\Enum\CommentStatusEnum;
 use App\Enum\UserStatusEnum;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+	private UserPasswordHasherInterface $passwordHasher;
+
 	public const MAX_USERS = 10;
 	public const MAX_MEDIA = 100;
 	public const MAX_SUBSCRIPTIONS = 3;
@@ -34,6 +37,11 @@ class AppFixtures extends Fixture
 	public const MAX_CATEGORY_PER_MEDIA = 3;
 	public const MAX_SUBSCRIPTIONS_HISTORY_PER_USER = 3;
 	public const MAX_COMMENTS_PER_MEDIA = 10;
+
+	public function __construct(UserPasswordHasherInterface $passwordHasher)
+	{
+		$this->passwordHasher = $passwordHasher;
+	}
 
 	public function load(ObjectManager $manager): void
 	{
@@ -110,8 +118,9 @@ class AppFixtures extends Fixture
 			$user = new User();
 			$user->setEmail(email: "test_{$i}@example.com");
 			$user->setUsername(username: "test_{$i}");
-			$user->setPassword(password: 'coucou');
+			$user->setPassword(password: $this->passwordHasher->hashPassword($user, 'coucou'));
 			$user->setStatus(UserStatusEnum::ACTIVE);
+			$user->setRoles(roles: ['ROLE_USER']);
 			$users[] = $user;
 
 			$manager->persist(object: $user);
@@ -221,7 +230,7 @@ class AppFixtures extends Fixture
 					$comment->setParentComment($parentComment);
 					$manager->persist($parentComment);
 				}
-				
+
 				$manager->persist($comment);
 			}
 		}
