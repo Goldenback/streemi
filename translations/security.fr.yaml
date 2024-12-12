@@ -1,0 +1,5 @@
+security:
+  An authentication exception occurred.: "Une exception d'authentification est survenue."
+  Invalid credentials.: "Identifiants invalides."
+  Username could not be found.: "Le nom d'utilisateur n'a pas pu être trouvé."
+  The presented password is invalid.: "Le mot de passe fourni est invalide."
